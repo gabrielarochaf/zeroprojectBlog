@@ -15,6 +15,7 @@ import styles from './home.module.scss';
 import ptBR from 'date-fns/locale/pt-BR';
 
 import Header from '../components/Header'
+import Head from 'next/head';
 
 interface Post {
   uid?: string;
@@ -80,6 +81,10 @@ export default function Home({
 
   return (
     <>
+
+      <Head>
+        <title>Home | Spacetraveling</title>
+      </Head>
       <main className={commonStyles.container}>
         <Header />
         <div className={styles.posts}>
@@ -101,7 +106,9 @@ export default function Home({
               </a>
             </Link>
           ))}
-          <button type="button" onClick={handleNextPage}>Carregar mais posts</button>
+          {nextPage &&
+            <button type="button" onClick={handleNextPage}>Carregar mais posts</button>
+          }
         </div>
       </main>
     </>
