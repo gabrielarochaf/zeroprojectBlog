@@ -10,14 +10,10 @@ import { RichText } from 'prismic-dom';
 import { useRouter } from 'next/router';
 import { format } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
-import Link from 'next/link';
-import Comment from '../../components/comments'
-import Header from '../../components/Header';
 
 
 interface Post {
   first_publication_date: string | null;
-  last_publication_date: string | null;
   data: {
     title: string;
     banner: {
@@ -35,24 +31,10 @@ interface Post {
 
 interface PostProps {
   post: Post;
-  preview: boolean;
-  navigation: {
-    prevPost: {
-      uid: string;
-      data: {
-        title: string;
-      };
-    }[];
-    nextPost: {
-      uid: string;
-      data: {
-        title: string;
-      };
-    }[];
-  }
+  preview: boolean
 }
 
-export default function Post({ post, navigation, preview }: PostProps) {
+export default function Post({ post, preview }: PostProps) {
 
   const router = useRouter();
 
@@ -68,27 +50,15 @@ export default function Post({ post, navigation, preview }: PostProps) {
     }
   );
 
-  const isPostEdited = post.first_publication_date !== post.last_publication_date;
+  // const totalWords = post.data.content.reduce((total, contentItem) => {
+  //   total += contentItem.heading.split('').length;
 
-  let editionDate;
-  if (isPostEdited) {
-    editionDate = format(
-      new Date(post.last_publication_date),
-      "'* editado em' dd MMM yyyy', às' H':'m",
-      {
-        locale: ptBR,
-      }
-    );
-  }
-  const totalWords = post.data.content.reduce((total, contentItem) => {
-    total += contentItem.heading.split('').length;
+  //   const words = contentItem.body.map(item => item.text.split('').length);
+  //   words.map(word => (total += word));
+  //   return total;
+  // }, 0);
 
-    const words = contentItem.body.map(item => item.text.split('').length);
-    words.map(word => (total += word));
-    return total;
-  }, 0);
-
-  const readTime = Math.ceil(totalWords / 200);
+  // const readTime = Math.ceil(totalWords / 200);
 
   return (
     <>
@@ -112,11 +82,10 @@ export default function Post({ post, navigation, preview }: PostProps) {
               </li>
               <li>
                 <FiClock />
-                {`${readTime} min`}
-                {/* 4 min */}
+                {/* {`${readTime} min`} */}
+                4 min
               </li>
             </ul>
-            {isPostEdited && <span>{editionDate}</span>}
           </div>
 
           {post.data.content.map(content => (
@@ -128,38 +97,8 @@ export default function Post({ post, navigation, preview }: PostProps) {
               />
             </article>
           ))}
+
         </div>
-
-        <section className={`${styles.navigation} ${commonStyles.container}`}>
-          {navigation?.prevPost.length > 0 && (
-            <div>
-              <h3>{navigation.prevPost[0].data.title}</h3>
-              <Link href={`/post/${navigation.prevPost[0].uid}`}>
-                <a>Post anterior</a>
-              </Link>
-            </div>
-          )}
-
-          {navigation?.nextPost.length > 0 && (
-            <div>
-              <h3>{navigation.nextPost[0].data.title}</h3>
-              <Link href={`/post/${navigation.nextPost[0].uid}`}>
-                <a>Próximo post</a>
-              </Link>
-            </div>
-          )}
-        </section>
-
-        <Comment />
-        {preview && (
-          <aside>
-            <Link href="/api/exit-preview">
-              <a className={commonStyles.preview}>
-                Sair do modo preview
-              </a>
-            </Link>
-          </aside>
-        )}
       </main>
     </>
   )
@@ -196,7 +135,6 @@ export const getStaticProps: GetStaticProps = async ({ params, preview = false, 
   const post = {
     uid: response.uid,
     first_publication_date: response.first_publication_date,
-    last_publication_date: response.last_publication_date,
     data: {
       title: response.data.title,
       subtitle: response.data.subtitle,
@@ -212,30 +150,9 @@ export const getStaticProps: GetStaticProps = async ({ params, preview = false, 
       })
     }
   }
-  const prevPost = await prismic.query(
-    [Prismic.Predicates.at('document.type', 'posts')],
-    {
-      pageSize: 1,
-      after: response.id,
-      orderings: '[document.first_publication_date]',
-    }
-  );
-
-  const nextPost = await prismic.query(
-    [Prismic.Predicates.at('document.type', 'posts')],
-    {
-      pageSize: 1,
-      after: response.id,
-      orderings: '[document.last_publication_date desc]',
-    }
-  );
   return {
     props: {
       post,
-      navigation: {
-        prevPost: prevPost?.results,
-        nextPost: nextPost?.results,
-      },
       preview
     }
   }

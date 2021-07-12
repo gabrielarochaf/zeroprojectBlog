@@ -95,7 +95,7 @@ export default function Post({ post, navigation, preview }: PostProps) {
       <Head>
         <title>{post.data.title} | Post</title>
       </Head>
-
+      <Header />
       <img src={post.data.banner.url} alt="banner" className={styles.banner} />
       <main className={commonStyles.container}>
         <div className={styles.posts}>

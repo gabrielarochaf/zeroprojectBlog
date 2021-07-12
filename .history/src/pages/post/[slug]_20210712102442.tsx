@@ -73,7 +73,7 @@ export default function Post({ post, navigation, preview }: PostProps) {
   let editionDate;
   if (isPostEdited) {
     editionDate = format(
-      new Date(post.last_publication_date),
+      new Date(post.first_publication_date),
       "'* editado em' dd MMM yyyy', às' H':'m",
       {
         locale: ptBR,
@@ -196,7 +196,6 @@ export const getStaticProps: GetStaticProps = async ({ params, preview = false, 
   const post = {
     uid: response.uid,
     first_publication_date: response.first_publication_date,
-    last_publication_date: response.last_publication_date,
     data: {
       title: response.data.title,
       subtitle: response.data.subtitle,

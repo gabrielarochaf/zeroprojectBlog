@@ -17,7 +17,6 @@ import Header from '../../components/Header';
 
 interface Post {
   first_publication_date: string | null;
-  last_publication_date: string | null;
   data: {
     title: string;
     banner: {
@@ -68,27 +67,15 @@ export default function Post({ post, navigation, preview }: PostProps) {
     }
   );
 
-  const isPostEdited = post.first_publication_date !== post.last_publication_date;
+  // const totalWords = post.data.content.reduce((total, contentItem) => {
+  //   total += contentItem.heading.split('').length;
 
-  let editionDate;
-  if (isPostEdited) {
-    editionDate = format(
-      new Date(post.last_publication_date),
-      "'* editado em' dd MMM yyyy', às' H':'m",
-      {
-        locale: ptBR,
-      }
-    );
-  }
-  const totalWords = post.data.content.reduce((total, contentItem) => {
-    total += contentItem.heading.split('').length;
+  //   const words = contentItem.body.map(item => item.text.split('').length);
+  //   words.map(word => (total += word));
+  //   return total;
+  // }, 0);
 
-    const words = contentItem.body.map(item => item.text.split('').length);
-    words.map(word => (total += word));
-    return total;
-  }, 0);
-
-  const readTime = Math.ceil(totalWords / 200);
+  // const readTime = Math.ceil(totalWords / 200);
 
   return (
     <>
@@ -112,11 +99,10 @@ export default function Post({ post, navigation, preview }: PostProps) {
               </li>
               <li>
                 <FiClock />
-                {`${readTime} min`}
-                {/* 4 min */}
+                {/* {`${readTime} min`} */}
+                4 min
               </li>
             </ul>
-            {isPostEdited && <span>{editionDate}</span>}
           </div>
 
           {post.data.content.map(content => (
@@ -196,7 +182,6 @@ export const getStaticProps: GetStaticProps = async ({ params, preview = false, 
   const post = {
     uid: response.uid,
     first_publication_date: response.first_publication_date,
-    last_publication_date: response.last_publication_date,
     data: {
       title: response.data.title,
       subtitle: response.data.subtitle,
@@ -234,7 +219,7 @@ export const getStaticProps: GetStaticProps = async ({ params, preview = false, 
       post,
       navigation: {
         prevPost: prevPost?.results,
-        nextPost: nextPost?.results,
+        nexPost: nextPost?.results,
       },
       preview
     }

@@ -70,16 +70,17 @@ export default function Post({ post, navigation, preview }: PostProps) {
 
   const isPostEdited = post.first_publication_date !== post.last_publication_date;
 
-  let editionDate;
-  if (isPostEdited) {
-    editionDate = format(
-      new Date(post.last_publication_date),
-      "'* editado em' dd MMM yyyy', às' H':'m",
-      {
-        locale: ptBR,
-      }
-    );
-  }
+  // let editionDate;
+  // if (isPostEdited) {
+  //   editionDate = format(
+  //     new Date(post.last_publication_date),
+  //     "'* editado em' dd MMM yyyy', às' H':'m",
+  //     {
+  //       locale: ptBR,
+  //     }
+  //   );
+  // }
+
   const totalWords = post.data.content.reduce((total, contentItem) => {
     total += contentItem.heading.split('').length;
 
@@ -116,7 +117,7 @@ export default function Post({ post, navigation, preview }: PostProps) {
                 {/* 4 min */}
               </li>
             </ul>
-            {isPostEdited && <span>{editionDate}</span>}
+            {/* {isPostEdited && <span>{editionDate}</span>} */}
           </div>
 
           {post.data.content.map(content => (
@@ -196,7 +197,6 @@ export const getStaticProps: GetStaticProps = async ({ params, preview = false, 
   const post = {
     uid: response.uid,
     first_publication_date: response.first_publication_date,
-    last_publication_date: response.last_publication_date,
     data: {
       title: response.data.title,
       subtitle: response.data.subtitle,

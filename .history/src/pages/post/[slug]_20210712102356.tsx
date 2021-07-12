@@ -74,12 +74,13 @@ export default function Post({ post, navigation, preview }: PostProps) {
   if (isPostEdited) {
     editionDate = format(
       new Date(post.last_publication_date),
-      "'* editado em' dd MMM yyyy', às' H':'m",
+      'dd MMM yyyy',
       {
-        locale: ptBR,
+        locale: ptBR
       }
     );
   }
+
   const totalWords = post.data.content.reduce((total, contentItem) => {
     total += contentItem.heading.split('').length;
 
@@ -196,7 +197,6 @@ export const getStaticProps: GetStaticProps = async ({ params, preview = false, 
   const post = {
     uid: response.uid,
     first_publication_date: response.first_publication_date,
-    last_publication_date: response.last_publication_date,
     data: {
       title: response.data.title,
       subtitle: response.data.subtitle,
